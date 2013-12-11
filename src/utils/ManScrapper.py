@@ -1,7 +1,9 @@
 import requests
-import re
 from Db import Db
-from bs4 import BeautifulSoup
+from lxml import etree
+from lxml.html import fromstring
+import urllib2
+import re
 
 class ManScrapper():
    
@@ -12,17 +14,17 @@ class ManScrapper():
 
     def __init__(self, url):
         ManScrapper.url = url
+        print '*** url: %s' % url
         r = self.get_man_page()
-        self.get_name(r)
+        print '*** man page downloaded '
+        self.get_name_from_url()
         self.set_body_and_header(r)
 
     def get_man_page(self):
         return requests.get(ManScrapper.url)
 
-    def get_name(self, request):
-        soup = BeautifulSoup(request.text)
-        m = re.search('.*?\(', soup.pre.string)
-        ManScrapper.name = m.group(0).replace('(','')
+    def get_name_from_url(self):
+        self.name = self.url.rsplit('/',1)[1].replace('.2.html','')
 
     def set_body_and_header(self, request):
         self.body = request.text
@@ -32,7 +34,3 @@ class ManScrapper():
         db_obj = Db()
         db_obj.save_raw(self)
 
-a = ManScrapper("http://man7.org/linux/man-pages/man2/clock_nanosleep.2.html")
-print a.name
-print a.url
-a.save()

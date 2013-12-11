@@ -12,7 +12,7 @@ needed """
     url = 'http://man7.org/linux/man-pages/fake/fake'
     urls = []
 
-    def __init__(self):
+    def do(self):
         self.get_urls()
         self.open_urls_and_store_data()
 
@@ -38,4 +38,4 @@ needed """
             # let's be nice to man page server. 1 request per second
             time.sleep(1)
 
-ManScrapThemAll()
+a = ManScrapThemAll().do()
